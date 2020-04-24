@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Home.MongoDBHelper;
 
 namespace Home
 {
@@ -26,7 +27,8 @@ namespace Home
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                //configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp/dist";
             });
         }
 
@@ -46,8 +48,12 @@ namespace Home
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
+            
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -66,6 +72,8 @@ namespace Home
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            MongoDBHelperSingleton.InitializeSingleton();
         }
     }
 }
